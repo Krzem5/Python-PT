@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page>
+	<id>behIO</id>
+	<title>Test Project</title>
+	<desc>In this project I'm going to...</desc>
+	<labels>
+		python
+		java
+	</labels>
+	<content>
+		<text>
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non roident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		</text>
+		<text>
+Okay, let's put it together and send that. Our $2sn$3server.py$2/sn$3 will have the following code for the message to send:
+		</text>
+		<file-view>
+Python-PT/data/assets/behIO.zip;
+Python-PT/data/pages/behIO.pg;
+Python-PT/web/css/content.css;
+Python-PT/web/css/main.css;
+Python-PT/web/js/content.js;
+Python-PT/web/js/main.js;
+Python-PT/web/home.html;
+Python-PT/web/page.html;
+Python-PT/index.bat;
+Python-PT/ngrok.exe;
+Python-PT/server.py;
+		</file-view>
+		<code lang="js" file="Python-PT/web/js/content.js">
+window.onload=function(){
+	function set_fold(e){
+		for (var c of e.children){
+			if (c.classList.contains("a")){
+				c.l=e.children;
+				c.addEventListener("click",function(){
+					var p=this.getAttribute("data-path");
+					var g;
+					for (var c of this.l){
+						if (c.getAttribute("data-path")==p){
+							c.classList.toggle("s");
+							if (c.classList.contains("go")){
+								g=c;
+							}
+						}
+					}
+					function f(i=0){
+						if (i>=200){
+							return;
+						}
+						i++;
+						setTimeout(f,0,i);
+						var el=g;
+						var gr=el.getBoundingClientRect(),gcr=el.children[0].getBoundingClientRect();
+						el.style.height=(gcr.height-(gr.y-gcr.y)).toString()+"px";
+						while ((el=el.parentNode.parentNode)!=null$4$4el.classList.contains("go")){
+							gr=el.getBoundingClientRect(),gcr=el.children[0].getBoundingClientRect();
+							el.style.height=(gcr.height-(gr.y-gcr.y)).toString()+"px";
+						}
+					}
+					setTimeout(f,0);
+				});
+			}
+			if (c.classList.contains("go")){
+				c.style.height=c.children[0].offsetHeight.toString()+"px";
+				c.children[0].style.width=c.offsetWidth.toString()+"px";
+				c.children[0].classList.add("r");
+				set_fold(c.children[0]);
+			}
+		}
+	}
+	parent.postMessage(document.body.scrollHeight,"*");
+	for (var di of document.getElementsByClassName("dicon")){
+		di.addEventListener("click",function(){
+			parent.postMessage("a"+this.parentNode.querySelector("pre.code").innerText.replace(/[\n\t\s]+$/,""),"*");
+		});
+	}
+	for (var b of document.querySelectorAll("div.content div.file-view pre.view")){
+		b.style.height=b.offsetHeight+"px";
+		for (var c of b.children){
+			if (c.classList.contains("go")){
+				c.style.height=c.children[0].offsetHeight.toString()+"px";
+				c.children[0].style.width=c.offsetWidth.toString()+"px";
+				c.children[0].classList.add("r");
+				set_fold(c.children[0]);
+			}
+		}
+	}
+	document.getElementsByClassName("zicon")[0].addEventListener("click",function(){
+		parent.postMessage("bproject.zip:"+window._download,"*");
+	})
+};
+		</code>
+		<code lang="batch" file="Python-PT/index.bat">
+cls
+python server.py
+taskkill
+start cmd /c ""
+		</code>
+	</content>
+</page>
