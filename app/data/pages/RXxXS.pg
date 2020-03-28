@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page>
+	<id>RXxXS</id>
+	<title>Java Module $4ndash; Class Importer</title>
+	<desc>A helper module that will allow you to import any class into java</desc>
+	<labels>java</labels>
+	<content>
+	<text>
+In java, importing classes can be sometimes quite hard: You can only import classes at the start of your program, there's no $2sn$3importlib$2/sn$3 (like in python), so i.e. can't load all classes from a dir w/o knowing their type.
+	</text>
+	<text>
+Those are only some of the reasons why you wolud need this helper class. There's some coding, so let's just jump in.
+	</text>
+	<text>
+Let's say that our main program ($2sn$3Main.java$2/sn$3) want's to load all the tools from the $2sn$3./scripts/$2/sn$3 directory.
+	</text>
+	<text>
+First of all, let's create a new folder (You can name it whatever you want, I just like to stay consisten with the names):
+	</text>
+	<dir>
+Java-Module_Class_Loader/
+	</dir>
+	<text>
+After we have created the folder, we should write our main java class and script classes in the $2sn$3./scripts/$2/sn$3 directory (We aslo need to create a class called $2sn$3Script.java$2/sn$3 and use class inheritance in the classes from the $2sn$3./scripts/$2/sn$3 directory, because Java compiler needs to be sure that the method $2sn$3exec()$2/sn$3 exists):
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java">
+public class Main{
+	public static final String SCRIPT_DIRECTORY="./scripts/";
+	public Script[] SCRIPTS;
+
+
+
+	public Main(){
+		this.SCRIPTS=this._load();
+		for (Script s:this.SCRIPTS){
+			s.exec();
+		}
+	}
+
+
+
+	private Script[] _load(){
+		return null;
+	}
+
+
+
+	public static void main(String[] args){
+		new Main();
+	}
+}
+	</code>
+		<code lang="java" file="Java-Module_Class_Loader/Script.java">
+public class Script{
+	public Script(){
+	}
+
+
+
+	public void exec(){
+	}
+}
+	</code>
+	<code lang="java" file="Java-Module_Class_Loader/scripts/ScriptA.java">
+import Script;
+
+
+
+public class ScriptA extends Script{
+	public ScriptA(){
+	}
+
+
+
+	public void exec(){
+		System.out.println("Script A!");
+	}
+}
+	</code>
+	<code lang="java" file="Java-Module_Class_Loader/scripts/ScriptB.java">
+import Script;
+
+
+
+public class ScriptB extends Script{
+	public ScriptB(){
+	}
+
+
+
+	public void exec(){
+		System.out.println("Script B!");
+	}
+}
+	</code>
+	<text>
+Now that we have our project folder and our main class, let's create a quick batch file to test-run our code.
+	</text>
+	<code lang="batch" file="Java-Module_Class_Loader/start.bat">
+echo off
+
+
+
+echo NUL>_.class
+del /s /f /q *.class
+
+
+
+cls
+
+
+
+javac Main.java
+java Main
+
+
+
+start /min cmd /c "echo NUL>_.class $4$4 del /s /f /q *.class"
+	</code>
+	<text>
+(If you are not sure if the files in the project folder are in the right directories, you can check if with the graph below)
+	</text>
+	<file-view>
+Java-Module_Class_Loader/scripts/ScriptA.java;
+Java-Module_Class_Loader/scripts/ScriptB.java;
+Java-Module_Class_Loader/Main.java;
+Java-Module_Class_Loader/Script.java;
+Java-Module_Class_Loader/start.bat;
+	</file-view>
+	<text>
+When we run our $2sn$3start.bat$2/sn$3 file, we'll see something like '$2i$3Exception in thread "main" java.lang.NullPointerException$2/i$3'. That's because $2sn$3Main._load$2/sn$3 returns null, so therefor we get '$2i$3java.lang.NullPointerException$2/i$3'.
+	</text>
+	<text>
+To load the actual classes themselves, we're going to be using a $2sn$3ClassLoader$2/sn$3. $2sn$3ClassLoader$2/sn$3 is a class in the $2sn$3java.lang$2/sn$3 package. It's a super class (it can be inherited) and it's already used by the $2sn$3import$2/sn$3 keyword, so It looks like the perfect thing for our problem.
+	</text>
+	<text>
+So, first we need to create a class called i.e. $2sn$3ModuleLoader$2/sn$3. I've chose to add it to the file contains our main class, but if you want you can declare it in a separate file. For everything to work, it needs to be extending the $2sn$3ClassLoader$2/sn$3 class.
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="34">
+class ModuleLoader extends ClassLoader{
+}
+	</code>
+	<text>
+Following the $2lnk l="https://docs.oracle.com/javase/7/docs/api/java/lang/ClassLoader.html"$3docs$2/lnk$3, we want to override the $2sn$3findClass$2/sn$3 method.
+	</text>
+	<text>
+To make the code look prettier, we'll add the 'class finding' code in a separate function called $2sn$3_load$2/sn$3.
+	</text>
+	<text>
+Method $2sn$3findClass$2/sn$3 takes 1 parameter, a $2sn$3String$2/sn$3, which indicates the class path to load, and it returns a $2sn$3Class$4lt;?$4gt;$2/sn$3 (Class object of any type). It throws a $2sn$3ClassNotFoundException$2/sn$3, so we have to include that too.
+	</text>
+	<text>
+Now our $2sn$3ModuleLoader$2/sn$3 class should look like that:
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="34">
+class ModuleLoader extends ClassLoader{
+	@Override
+	public Class$2?$3 findClass(String nm) throws ClassNotFoundException{
+		return this._load(nm);
+	}
+
+
+
+	private Class$2?$3 _load(String nm){
+		return null;
+	}
+}
+	</code>
+	<text>
+And now... prepare for some coding. The $2sn$3_load$2/sn$3 will be the main core of our program.
+	</text>
+	<text>
+First of all, because while running the java uses .class files, we should compile the class that we will want to load. To do that, we'll use a $2sn$3ProcessBuilder$2/sn$3. We'll run a $2sn$3javac$2/sn$3 batch command to compile the file, so that later java will be able to import it.
+	</text>
+	<text>
+To compile a java file you need to be in the same directory as that file, e.x. if your file is located in a $2sn$3./src/$2/sn$3 folder, you need to be in that folder to to successfully compile the file.
+	</text>
+	<text>
+If you're going to reference any file located outside the directory that you want to import files from, you will need add a $2sn$3-sourcepath$2/sn$3 argument to your $2sn$3javac$2/sn$3 command. For us, the sourcepath will be the directory, from where the app was run, so it will be okay to use $2sn$3System.getProperty("user.dir")$2/sn$3.
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="42">
+	private Class$2?$3 _load(String nm){
+		String dir=nm.substring(0,nm.lastIndexOf("\\"));
+		String sp=System.getProperty("user.dir");
+		String fn=nm.substring(nm.lastIndexOf("\\")+1);
+		ProcessBuilder b=new ProcessBuilder("cmd.exe","/c","cd \""+dir+"\" $4$4 javac -sourcepath "+sp+" "+fn);
+	}
+	</code>
+	<text>
+We created a process, but we didn't start it. For that we will use $2sn$3ProcessBuilder.start()$2/sn$3. This method returns a new $2sn$3Process$2/sn$3 object. The $2sn$3Process$2/sn$3 object has a function called $2sn$3waitFor()$2/sn$3 which will temporarily pause script execution until the process will finish. 
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="42">
+	private Class$2?$3 _load(String nm){
+		String dir=nm.substring(0,nm.lastIndexOf("\\"));
+		String sp=System.getProperty("user.dir");
+		String fn=nm.substring(nm.lastIndexOf("\\")+1);
+		ProcessBuilder b=new ProcessBuilder("cmd.exe","/c","cd \""+dir+"\" $4$4 javac -sourcepath "+sp+" "+fn);
+		Process p=b.start();
+		p.waitFor();
+	}
+	</code>
+	<text>
+Now, the method $2sn$3ProcessBuilder.start()$2/sn$3 throws two exceptions: $2sn$3java.io.IOException$2/sn$3 and $2sn$3java.lang.InterruptedException$2/sn$3. because of that, we need to slightly modify our $2sn$3_load()$2/sn$3 method:
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="42">
+	private Class$2?$3 _load(String nm) throws IOException,InterruptedException{
+	</code>
+	<text>
+After all of that, we have out program compiling the java class, now we just have to load it. And well..., it's easier said than done.
+	</text>
+	<text>
+We want to have the file content as a $2sn$3byte[]$2/sn$3, so that we can call the $2sn$3defineClass()$2/sn$3 method to actually define the class. First of all, we want to load the file itself. I've chose to load it directly into an $2sn$3InputStream$2/sn$3 (You don't have to, but just make sure that it end up as a $2sn$3java.io.InputStream$2/sn$3).
+	</text>
+	<text>
+We'll use a $2sn$3ByteArrayOutputStream$2/sn$3, which later convert to a byte array. We need to declare it right now, because we will be dynamically adding bytes from the $2sn$3InputStream$2/sn$ to it. We also need an $2sn$3int$2/sn$3 variable to keep track of the current byte read from the file.
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="49">
+		InputStream inpS=new FileInputStream(new File(fn.replace(".java",".class")));
+		ByteArrayOutputStream bS=new ByteArrayOutputStream();
+		int cb=-1;
+	</code>
+	<text>
+Now we want to write the byte-reading loop itself. For that, I chose to use the $2sn$3do{}while()$2/sn$3 java syntax. We basically want to copy all the bytes one-by-one from the $2sn$3InputStream$2/sn$3 to the $2sn$3ByteArrayOutputStream$2/sn$3.
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="52">
+		do{
+			cb=inpS.read();
+			bS.write(cb);
+		}
+		while (cb!=-1);
+	</code>
+	<text>
+We have a $2sn$3ByteArrayOutputStream$2/sn$3, but how do we convert it into a byte list? Well, it can actually be done by one simple line of code!
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="58">
+		byte[] bl=bS.toByteArray();
+	</code>
+	<text>
+To create the $2sn$3Class$2/sn$3 object, we want to call the $2sn$3defineClass()$2/sn$3 function. It takes 4 parameters:a $2sn$3String$2/sn$3 - the name of the class, a $2sn$3byte[]$2/sn$3 - the data of the class, an $2sn$3int$2/sn$3 the offset of the class data in the array and another $2sn$3int$2/sn$3 - the length of the class data in the array.
+	</text>
+	<text>
+For us, the offset and the length parameters aren't useful, so we'll set the offset to 0 and the length to the length of our byte array. The name parameter will be the file name (Not the absolute path!) of the file we import, but without the $2i$3.java$2/i$3 extension.
+	</text>
+	<text>
+We can return the output of the $2sn$3Class$2/sn$3 immediately, because we won't do anything else with it here.
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="59">
+		String name=nm.substring(nm.lastIndexOf("\\")+1,nm.length()-".java".length());
+		return this.defineClass(name,bl,0,bl.length);
+	</code>
+	<text>
+Now, for a second, let's go back to our $2sn$3findClass()$2/sn$3 function. Notice, that our $2sn$3_load()$2/sn$3 function can throw 2 exceptions: $2sn$3java.io.IOException$2/sn$3 and $2sn$3java.lang.InterruptedException$2/sn$3. We need add a $2sn$3try{}catch(){}$2/sn$3 statement in our code.
+	</text>
+	<text>
+I was lazy, so instead of writing a $2sn$3catch(){}$2/sn$3 statement for each one of the exception, I just wrote one for all exceptions.
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="36">
+	public Class$2?$3 findClass(String nm) throws ClassNotFoundException{
+		try{
+			return this._load(nm);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	</code>
+	<text>
+(We need the $2sn$3return null;$2/sn$3 line at the end, because even if $2sn$3Exception.printStackTrace()$2/sn$3 will end the program, java still want's to be sure that if for some reason the program doesn't end, we still return something.)
+	</text>
+	<text>
+Just before we run our program, we can't forget to import the modules that we've used!
+	</text>
+	<code lang="java" file="Java-Module_Class_Loader/Main.java" sl="0">
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.lang.ClassLoader;
+import java.lang.Class;
+import java.util.ArrayList;
+	</code>
+	</content>
+</page>
