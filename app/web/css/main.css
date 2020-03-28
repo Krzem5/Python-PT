@@ -1,0 +1,17 @@
+body {
+	margin: 0;
+	border: none;
+	padding: 0;
+	outline: none;
+	width: 100%;
+	height: 500px;
+}
+iframe {
+	position: absolute;
+	top: 100px;
+	left: 120px;
+	right: 120px;
+	width: calc(100% - 240px);
+	outline: none;
+	border: none;
+}
