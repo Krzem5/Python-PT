@@ -24,7 +24,7 @@ window.onmessage=function(e){
 				break;
 			case "b":
 				var a=document.createElement("a");
-				n=e.data.substring(1).split(":")[0];
+				let n=e.data.substring(1).split(":")[0];
 				a.href=e.data.substring(2+n.length);
 				a.target="_black";
 				a.download=n;
