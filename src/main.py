@@ -115,7 +115,9 @@ def render_page(ID):
 		js=f.read()
 	with open(WEB_PAGE_JS_PATH,"r") as f:
 		wjs=f.read()
-	with open(f"{PAGES_DIR}{ID}.pg","r") as f:
+	if (ID not in list(os.listdir(PAGES_DIR))):
+		return b"404 - Not Found"
+	with open(PAGES_DIR+ID+".pg","r") as f:
 		xml=ET.fromstring(f.read())
 	d={}
 	if (ntpath.isfile(DOWNLOAD_DIR+ID+".zip")):
@@ -148,7 +150,7 @@ class Handler(BaseHTTPRequestHandler):
 			self.send_response(200)
 			self.send_header("Content-type","text/plain")
 			self.end_headers()
-			shutil.copyfileobj(open("."+self.path,"rb"),self.wfile)
+			shutil.copyfileobj(open("."+self.path[:-4].replace(".","").replace(":","")+".zip","rb"),self.wfile)
 		else:
 			self.send_error(404,message="File not found")
 
